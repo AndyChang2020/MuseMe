@@ -1,0 +1,95 @@
+<%- include("../partials/header") %>
+
+	<div class="row">
+		<div class="col-md-3">
+			<p class="lead">MuseMe</p>
+			<div class="list-group">
+				<li class="list-group-item active">Info 1</li>
+				<li class="list-group-item">Info 2</li>
+				<li class="list-group-item">Info 3</li>
+			</div>
+		</div>
+		
+		<div class="col-md-9">
+			<div class="thumbnail">
+				<img class="img-responsive" src="<%= museum.image %>">
+				<div class="caption-full">
+					<h4><a><%= museum.name %></a></h4>
+					<p><%= museum.description %></p>
+					<p>
+						<em>Submitted By <%= museum.author.username %>, <%= moment(museum.createdAt).fromNow() %></em>
+					</p>
+					<% if(currentUser && museum.author.id.equals(currentUser._id)){ %>
+						<a class="btn btn-warning btn-xs" href="/museums/<%= museum._id %>/edit">Edit</a>
+						<form action="/museums/<%= museum._id %>?_method=DELETE" method="POST" class="delete-form">
+							<button class="btn btn-danger btn-xs">Delete</button>
+						</form>
+					<% } %>
+				</div>
+			</div>
+			
+			<!--Comment section-->
+			<div class="well">
+				<div class="text-right">
+					<a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
+						Add new comment
+					</a>
+				</div>
+		
+				<h4><strong><span class="glyphicon glyphicon glyphicon-sunglasses" aria-hidden="true"></span> Comments</strong></h4>
+				<div class="collapse" id="collapseComment">
+					<div class="well">
+						<% if(!currentUser){ %>
+							<h5>You need to login before you can comment. <a href="/login">Click here</a> to go to login page.</h5>
+						<% } else { %>
+							<form id="add-comment-form" action="/museums/<%= museum._id %>/comments" method="POST">
+								<div class="form-group">
+									<textarea class="form-control" name="comment[text]" placeholder="Write your comment here..." form="add-comment-form" rows="3" cols="70"></textarea>
+								</div>
+								<div class="form-group">
+									<button class="btn btn-success">Submit !</button>
+								</div>
+							</form>
+						<% } %>
+					</div>
+				</div>
+				<!--Collapse Add a comment form END-->
+				<hr>
+				<% if(museum.comments.length === 0){ %>
+					<em style="color: grey;">No comments yet.</em>
+				<% } %>
+				<% museum.comments.forEach(function(comment){ %>
+					<div class="row">
+						<div class="col-md-12">
+							<strong><%= comment.author.username %></strong>
+							<span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>
+							<p><%= comment.text %></p>
+							<!--If the visitor is logged in and the owner of the comment, show the edit and delete buttons-->
+							<% if(currentUser && currentUser._id.equals(comment.author.id)){ %>
+								<a class="btn btn-xs btn-warning" role="button" data-toggle="collapse" href="#collapseEdit<%= comment._id %>" aria-expanded="false" aria-controls="collapse<%= comment._id %>">Edit</a>
+					  			<form id="delete-form" action="/museums/<%= museum._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST" style="display: inline;">
+									<button class="btn btn-xs btn-danger">Delete</button>
+								</form>
+							
+								<!--Edit comment form-->
+								<div class="collapse" id="collapseEdit<%= comment._id %>">
+									<div class="well" style="margin-top: 15px;">
+										<form id="edit-comment-form<%= comment._id %>" action="/museums/<%= museum._id %>/comments/<%= comment._id %>?_method=PUT" method="POST">
+											<div class="form-group">
+												<textarea class="form-control" name="comment[text]" form="edit-comment-form<%= comment._id %>" rows="3" cols="70"><%= comment.text %></textarea>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-warning">Submit !</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							<% } %>
+							<hr>
+						</div>
+					</div>
+				<% }) %>
+			</div>
+			<!--Comment section END-->
+
+<%- include("../partials/footer") %>

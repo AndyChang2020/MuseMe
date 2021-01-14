@@ -17,10 +17,10 @@
 	</header>
 	
 	<div class="row text-center" style="display: flex; flex-wrap: wrap;">
-		<% museums.forEach(function(museum){ %>
+		<% museums.forEach((museum) => { %>
 			<div class="col-md-3 col-sm-6">
 				<div class="thumbnail">
-					<img src="<%= museum.image %>">
+					<img src="<%= museum.images[0].url %>">
 					<div class="caption">
 						<h4><%= museum.name %></h4>
 					</div>

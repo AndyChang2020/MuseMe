@@ -1,15 +1,16 @@
 <%- include("../partials/header") %>
 
 	<div class="row">
-		<h1 style="text-align: center;">Edit <%= museum.name %></h1>
+		<h1 style="text-align: center;"><%= museum.name %></h1>
 		
 		<div style="width: 30%; margin: 25px auto;">
-			<form action="/museums/<%= museum._id %>?_method=PUT" method="POST">
+			<form action="/museums/<%= museum._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 				<div class="form-group">
 					<input class="form-control" type="text" name="museum[name]" value="<%= museum.name %>" required>
 				</div>
+				
 				<div class="form-group">
-					<input class="form-control" type="text" name="museum[image]" value="<%= museum.image %>" required>
+					<input class="form-control" type="file" name="image" multiple>
 				</div>
 				
 				<div class="form-group">
@@ -25,8 +26,19 @@
 				<div class="form-group">
 					<textarea class="form-control" name="museum[description]" rows="6" cols="70"><%= museum.description %></textarea>
 				</div>
+				
 				<div class="form-group">
-					<button class="btn btn-lg btn-primary btn-block">Submit!</button>
+					<% museum.images.forEach((img, i) => { %>
+					<img src="<%= img.thumbnail %>" class="img-thumbnail">
+					<div class="form-check-inline">
+						<input type="checkbox" id="image-<%= i %>" name="deleteImages[]" value="<%= img.filename %>">
+						<label for="image-<%= i %>">Delete?</label>
+					</div>
+					<% }) %>
+				</div>
+				
+				<div class="form-group">
+					<button class="btn btn-lg btn-primary btn-block">Update!</button>
 				</div>
 			</form>
 			<a href="/museums">Go Back</a>

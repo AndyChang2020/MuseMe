@@ -6,13 +6,34 @@
 			<div class="list-group">
 				<li class="list-group-item active">Info 1</li>
 				<li class="list-group-item">Info 2</li>
-				<li class="list-group-item">Info 3</li>
+				<li class="list-group-item">Info 4</li>
 			</div>
 		</div>
 		
 		<div class="col-md-9">
 			<div class="thumbnail">
-				<img class="img-responsive" src="<%= museum.image %>">
+				
+				<div id="museumCarousel" class="carousel slide" data-ride="carousel">
+					<div class="carousel-inner">
+						<% museum.images.forEach((img, i) => { %>
+						<div class="item <%= i === 0 ? "active" : "" %>">
+							<img src="<%= img.url %>" class="d-block w-100" alt="">
+						</div>
+						<% }) %>
+					</div>
+					
+					<% if(museum.images.length > 1) { %>
+					<a class="left carousel-control" href="#museumCarousel" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="right carousel-control" href="#museumCarousel" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+					<% } %>
+				</div>
+
 				<div class="caption-full">
 					<h4><a><%= museum.name %></a></h4>
 					<p><%= museum.description %></p>
@@ -26,6 +47,7 @@
 						</form>
 					<% } %>
 				</div>
+				
 			</div>
 			
 			<!--Comment section-->

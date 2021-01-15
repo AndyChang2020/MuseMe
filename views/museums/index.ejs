@@ -1,5 +1,7 @@
 <%- include("../partials/header") %>
 
+	<div id="cluster-map" style="width: 100%; height: 500px"></div>
+
 	<header class="jumbotron">
 		<div class="container">
 			<h1>Welcome to MuseMe!</h1>
@@ -76,5 +78,15 @@
 			</ul>
 		<% } %>
 	</div>
+</div>
 
-<%- include("../partials/footer") %>
+	<script>
+		const mapToken = "<%- process.env.MAPBOX_TOKEN %>";
+		const museums = { features: <%- JSON.stringify(museums) %>};
+	</script>
+	<script src="/javascripts/clusterMap.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</body>
+</html>

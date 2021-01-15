@@ -11,6 +11,8 @@ ImageSchema.virtual("thumbnail").get(function() {
     return this.url.replace("/upload", "/upload/w_200");
 });
 
+const opts = { toJSON: { virtuals: true } };
+
 const museumSchema = new Schema({
 	name: String,
 	images: [ImageSchema],
@@ -43,6 +45,11 @@ const museumSchema = new Schema({
 			ref: "Comment"
 		}
 	]
+}, opts);
+
+museumSchema.virtual("properties.popUpMarkup").get(function () {
+    return `<a href="/museums/${this._id}">${this.name}</a>`
 });
+
 
 module.exports = mongoose.model("museum", museumSchema);

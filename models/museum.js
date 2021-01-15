@@ -15,12 +15,22 @@ const museumSchema = new Schema({
 	name: String,
 	images: [ImageSchema],
 	address: String,
+	geometry:{
+		type: {
+			type: String,
+			enum: ['Point'],
+			required: true
+		},
+		coordinates: {
+			type: [Number],
+			required: true
+		}
+	},
 	price: String,
 	contact: String,
 	description: String,
 	createdAt: {type: Date, default: Date.now},
-	author: 
-	{
+	author: {
 		id: {
 			type: Schema.Types.ObjectId,
 			ref: "User"

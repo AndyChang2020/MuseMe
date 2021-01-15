@@ -5,7 +5,11 @@ const express = require("express"),
       multer = require('multer'),
 	  { storage } = require("../cloudinary"),
       upload = multer({ storage }),
-	  { cloudinary } = require("../cloudinary");
+	  { cloudinary } = require("../cloudinary"),
+	  mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding"),
+	  mapBoxToken = process.env.MAPBOX_TOKEN,
+	  geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 
 //Index - show all museums
 router.get("/", (req, res) => {
@@ -44,20 +48,29 @@ router.get("/new", middleware.isLoggedIn, (req, res) => {
 });
 
 //CREATE - add new museum to database
-router.post("/", middleware.isLoggedIn, upload.array("image"), (req, res) => {
-	const name = req.body.name;
-	const images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-	const addr = req.body.address;
-	const price = req.body.price;
-	const cont = req.body.contact;
-	const desc = req.body.description;
-	const author = {
-	id: req.user._id,
-	username: req.user.username
-	}
-	const newMuseum = {name: name, images: images,
-					   address: addr, price: price, contact: cont,	   
-					   description: desc, author: author};
+router.post("/", middleware.isLoggedIn, upload.array("image"), async (req, res) => { 
+	const name = req.body.name,
+		  images = req.files.map(f => ({ url: f.path, filename: f.filename })),
+		  addr = req.body.address,
+		  price = req.body.price,
+		  cont = req.body.contact,
+		  desc = req.body.description,
+		  author = {
+			  id: req.user._id,
+			  username: req.user.username
+		  };
+	
+	const geoData = await geocoder.forwardGeocode({
+        query: addr,
+        limit: 1
+    }).send();
+	
+	const newMuseum = {
+		name: name, images: images,
+		address: addr, price: price, contact: cont,	   
+		description: desc, author: author,
+		geometry: geoData.body.features[0].geometry
+	};
 	Museum.create(newMuseum, (err, museum) => {
 		if(err){
 			console.log(err);

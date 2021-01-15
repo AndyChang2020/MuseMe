@@ -4,9 +4,15 @@
 		<div class="col-md-3">
 			<p class="lead">MuseMe</p>
 			<div class="list-group">
-				<li class="list-group-item active">Info 1</li>
-				<li class="list-group-item">Info 2</li>
-				<li class="list-group-item">Info 4</li>
+				<li class="list-group-item active">
+					<div id='map' style='width: 100%; height: 300px;'></div>
+				</li>
+				<li class="list-group-item">Price: 
+					<div><em><%= museum.price %></em></div>
+				</li>
+				<li class="list-group-item">Contact: 
+					<div><a href="<%= museum.contact %>"><%= museum.contact %></a></div>
+				</li>
 			</div>
 		</div>
 		
@@ -113,5 +119,17 @@
 				<% }) %>
 			</div>
 			<!--Comment section END-->
+		</div>
+	</div>
 
-<%- include("../partials/footer") %>
+
+	<script>
+		const mapToken = "<%- process.env.MAPBOX_TOKEN %>";
+		const museum = <%- JSON.stringify(museum) %>;
+	</script>
+	<script src="/javascripts/showPageMap.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</body>
+</html>

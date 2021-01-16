@@ -9,10 +9,4 @@ const map = new mapboxgl.Map({
 
 new mapboxgl.Marker()
     .setLngLat(museum.geometry.coordinates)
-    .setPopup(
-        new mapboxgl.Popup({ offset: 25 })
-            .setHTML(
-                `<h3>${museum.name}</h3><p>${museum.address}</p>`
-            )
-    )
     .addTo(map);

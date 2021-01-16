@@ -44,7 +44,7 @@ app.use(flash());
 
 // Passport config
 app.use(require("express-session")({
-	secret: "I know China more than anybody else",
+	secret: "I know China more than anybody else!!",
 	resave: false,
 	saveUninitialized: false
 }));

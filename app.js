@@ -22,8 +22,10 @@ const museumRoutes = require("./routes/museums"),
 
 mongoose.set("useUnifiedTopology", true);
 mongoose.set("useFindAndModify", false);
-// Terminal: export DATABASEURL="mongodb://localhost/muse_me"
-mongoose.connect(process.env.DATABASEURL, {
+
+// Terminal: export DB_URL="mongodb://localhost/muse_me"
+
+mongoose.connect(process.env.DB_URL, {
 	useNewUrlParser: true,
 	useCreateIndex: true
 }).then(() => {

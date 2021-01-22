@@ -2,9 +2,9 @@ const express = require("express"),
 	  router = express.Router({mergeParams: true}),
 	  Museum = require("../models/museum"),
 	  middleware = require("../middleware"),
-      multer = require('multer'),
+	  multer = require('multer'),
 	  { storage } = require("../cloudinary"),
-      upload = multer({ storage }),
+	  upload = multer({ storage }),
 	  { cloudinary } = require("../cloudinary"),
 	  mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding"),
 	  mapBoxToken = process.env.MAPBOX_TOKEN,
@@ -14,31 +14,35 @@ const express = require("express"),
 //Index - show all museums
 router.get("/", (req, res) => {
 	let perPage = 8;
-    let pageQuery = parseInt(req.query.page);
-    let pageNumber = pageQuery ? pageQuery : 1;
+	let pageQuery = parseInt(req.query.page);
+	let pageNumber = pageQuery ? pageQuery : 1;
 	let findObj = {};
 	if(req.query.search){
 		findObj.name = new RegExp(escapeRegex(req.query.search), "gi");
 	}
-	Museum.find(findObj).skip((perPage * pageNumber) - perPage).limit(perPage).exec((err, allMuseums) => {
-		Museum.countDocuments().exec((err, count) => {
-			if(err){
-				console.log(err);
-			}
-			else if(req.query.search && allMuseums.length < 1){
-				req.flash("error", "No such museum found!");
-				res.redirect("back");
-			}
-			else{
-				res.render("museums/index", {
-					museums: allMuseums,
-					page: "museums",
-					current: pageNumber,
-					pages: Math.ceil(count / perPage),
-					search: req.query.search
-				});
-			}
-		});
+	
+	Museum.find({}).exec((err, allMuseums) => {
+		Museum.find(findObj).skip((perPage * pageNumber) - perPage).limit(perPage).exec((err, museums) => {
+			Museum.countDocuments().exec((err, count) => {
+				if(err){
+					console.log(err);
+				}
+				else if(req.query.search && museums.length < 1){
+					req.flash("error", "No such museum found!");
+					res.redirect("back");
+				}
+				else{
+					res.render("museums/index", {
+						allMuseums: allMuseums,
+						museums: museums,
+						page: "museums",
+						current: pageNumber,
+						pages: Math.ceil(count / perPage),
+						search: req.query.search
+					});
+				}
+			});
+		});	
 	});
 });
 
@@ -61,9 +65,9 @@ router.post("/", middleware.isLoggedIn, upload.array("image"), async (req, res) 
 		  };
 	
 	const geoData = await geocoder.forwardGeocode({
-        query: addr,
-        limit: 1
-    }).send();
+		query: addr,
+		limit: 1
+	}).send();
 	
 	const newMuseum = {
 		name: name, images: images,
@@ -136,7 +140,7 @@ router.delete("/:id", middleware.checkMuseumOwnership, (req, res) => {
 });
 
 function escapeRegex(text){
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
 module.exports = router;
